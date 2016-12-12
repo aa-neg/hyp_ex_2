@@ -1,83 +1,64 @@
+"use strict";
 
+const chai = require('chai');
+const expect = chai.expect;
 
-describe('homeController', function() {
-    let $scope;
-    let homeController;
-    let $q;
-    let deferred;
-    let $httpBackend
-    let apiBaseUrl
+const api = require('../server/api.js');
 
-    beforeEach(function() {
-        window.angular.mock.module('emailSender');
+let backUpTrigger = false;
 
-        inject(function(_$rootScope_, $controller, _$q_, _$httpBackend_, _apiBaseUrl_, _$http_, ngNotify) {
-            $q = _$q_;
+let mockMainClient = function(testBody) {
+    return new Promise(function(resolve, reject) {
+        if (testBody.failOnce) {
+            reject('sendgrid error')
+        } else {
+            resolve({message: 'success'})
+        }
+    })
+} 
 
-            apiBaseUrl = _apiBaseUrl_
+let mockBackupClient = function(testBody) {
+    return new Promise(function(resolve, reject) {
+        if (testBody.failTwice) {
+            reject('mailgun error')
+            return
+        } 
 
-            deferred = _$q_.defer();
+        backUpTrigger = true;
 
-            $httpBackend = _$httpBackend_;
+        resolve({message: 'success'})
+       
+    })
+} 
 
-            $scope = _$rootScope_.$new()
-            console.log("what is ngnotify?");
-            console.log(ngNotify)
-
-            $scope.emailForm = {};
-
-            homeController = $controller('homeController', {
-                $scope: $scope,
-                $q: $q,
-                $http: _$http_,
-                apiBaseUrl: _apiBaseUrl_,
-                ngNotify: ngNotify
-            })
-            // homeController = _homeController_   
+describe("sendEmail", function() {
+    it("Should return true if first client successfull", function(done) {
+        api.sendEmail({}, mockMainClient, mockBackupClient)
+        .then((result)=> {
+            expect(result.success).to.eql(true);
+            done();
         })
     })
 
-    it('Should exist', function(done) {
-        this.timeout = 10000;
-        console.log(homeController)
-        $scope.emailForm.$invalid = false;
-        $scope.validation = {
-            attribute: true
-        }
-        // expect(homeController).toBeDefined();
+    it("Should fallback to back-up client ", function(done) {
+        backUpTrigger = false;
+        api.sendEmail({failOnce: true},  mockMainClient, mockBackupClient)
+        .then((result)=> {
+            expect(result.success).to.eql(true);
+            expect(backUpTrigger).to.eql(true);
+            done()
+        })
+    });
 
-        console.log("from our test!");
-        console.log(apiBaseUrl + '/mailGun/send')
-        $httpBackend
-        .when('POST', apiBaseUrl + 'mailGun/send')
-        .respond(200, {
-            errors: [],
-            data: "mail sent!"
-        });
-
-        // $httpBackend.expect('POST', 'http://localhost/sendGrid/send')
-        // .respond(200, {
-        //     errors: [],
-        //     data: "mail sent!"
-        // })
-
-        $scope.sendMail({},  'mailGun', 'sendGrid');
-        console.log("before our flush")
-        $httpBackend.flush();
-        // deferred.resolve();
-        // $scope.$digest();
-
-        console.log("after our flush");
-
-
-        // done()
-
-
-
-        
-
-     
-
-        
-    }) 
+    it("Should not succeed if both clients fail", function(done) {
+        backUpTrigger = false;
+        api.sendEmail({failOnce: true, failTwice: true},  mockMainClient, mockBackupClient)
+        .then((result)=> {
+        })
+        .catch((error)=> {
+            expect(error.errors.length).to.eql(2);
+            expect(error.success).to.eql(false);
+            done()
+        })
+    })
 })

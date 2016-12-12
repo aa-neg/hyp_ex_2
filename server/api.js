@@ -96,7 +96,7 @@ let sendMailGun = module.exports.sendMailGun = function(details) {
 };
 
 let emailClients = module.exports.emailClients = {
-	mailGun: sendMailgun,
+	mailGun: sendMailGun,
 	sendGrid: sendSendGrid
 }
 
@@ -112,7 +112,7 @@ let sendEmail = module.exports.sendEmail = function(emailBody, mainClient, backU
 
 		mainClient(emailBody)
 		.then((results)=> {
-			responseObject.message = results.message;
+			responseObject.message = "Successfully sent email through " + results.client;
 			responseObject.details = results.body;
 			responseObject.success = true;
 			resolve(responseObject);

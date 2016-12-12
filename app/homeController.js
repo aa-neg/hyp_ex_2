@@ -34,32 +34,13 @@
             return emailList;
         };
 
-        //If we error and have a backUpClient we will attempt to resend via the backup.
-        // let errorHandling = (error, initialClient, backUpClient) => {
-        //     $scope.progress.status = "Error sending via "  +  initialClient  + " : " + error;
-        //     ngNotify.set("Error sending via "  +  initialClient  + " : " + error, 'warn');
-        //     if (backUpClient) {
-        //         ngNotify.set('Will attempt to resend via: ' + backUpClient, 'info');
-        //         $scope.sendMail(details, backUpClient, null);
-        //     } else {
-        //         $scope.sendingMail = false;
-        //     }
-        // };
-
         $scope.sendMail = (details, initialClient, backUpClient) => {
-            console.log("here are our details. we will send back");
-
-            console.log(details);
-            console.log("our client and backup client");
-            console.log(initialClient);
-            console.log(backUpClient);
-
             if ($scope.emailForm.$invalid || Object.keys($scope.validation).every((emailValidated)=> {return !$scope.validation[emailValidated]})) {
-                console.log("inside here?");
-                console.log($scope.emailForm.$invalid);
                 ngNotify.set("Please fill out all required fields with valid values.", 'warn');
                 return;
             }
+
+            $scope.progress.status = '';
 
             EmailService.send({
                 client: initialClient,
@@ -86,38 +67,7 @@
                     })
                 };
             })
-
-
-
-            // console.log("success");
-            // $scope.sendingMail = true;
-            // $scope.progress.status = "Sending via " + initialClient  + " . . .";
-            // console.log(apiBaseUrl +  initialClient  + '/send')
-
-            // $http.post(apiBaseUrl +  initialClient  + '/send', {details: details})
-            // .then((results)=> {
-            //     console.log("here are our results from the http");
-            //     console.log(results);
-            //     if (results.data.error) {
-            //         errorHandling(results.data.error, initialClient, backUpClient);
-            //         return;
-            //     } 
-                
-            //     $scope.sendingMail = false;
-            //     ngNotify.set("Successfully sent via " + initialClient, 'success');
-            //     if (results.data.result && results.data.result.message) {
-            //         $scope.progress.status = initialClient + " response: " + result.data.result.message;
-            //     } else {
-            //         $scope.progress.status = "Successfully sent via " + initialClient;
-            //     }
-            
-            // })
-            // .catch((error)=> {
-            //     console.log("did we enter here?");
-            //     console.log(error);
-            //     errorHandling(error, initialClient, backUpClient);
-            // })
-            
+        
         };
 
     });

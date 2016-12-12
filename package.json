@@ -4,7 +4,7 @@
   "description": "simple web interface to display alerts table",
   "main": "index.js",
   "scripts": {
-    "test": "karma start",
+    "test": "mocha test/clientFallback.test.js",
     "start": "cd server && node server.js start"
   },
   "repository": {
@@ -23,9 +23,11 @@
     "angular-spinner": "^0.8.1",
     "body-parser": "^1.15.2",
     "bootstrap": "^3.3.7",
+    "chai": "^3.5.0",
     "config": "^1.21.0",
     "express": "^4.14.0",
     "jquery": "^3.1.0",
+    "mocha": "^3.2.0",
     "ng-notify": "^0.7.1",
     "path": "^0.12.7",
     "request": "^2.79.0",

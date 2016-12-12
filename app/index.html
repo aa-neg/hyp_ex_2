@@ -9,6 +9,7 @@
         <link rel="stylesheet" type="text/css" href="node_modules/ui-select/dist/select.min.css">
         <link rel="stylesheet" type="text/css" href="node_modules/ng-notify/dist/ng-notify.min.css">
     </head>
+
     <body>
         <div>
             <navbar></navbar>
@@ -79,15 +80,19 @@
                     </div>
                     <div class="form-group">
                         <br>
+                        <p class = 'spinner-loader' ng-show="progress.sendingMail"></p>
                         <div class="col-sm-12">
-                            <!-- <div class="col-sm-8"> -->
-                            <p>{{progress.status}}</p><p class = 'spinner-loader' ng-show="progress.sendingMail"></p>
-                        <!-- </div> -->
                             <div class="pull-right">
                                 <button type="submit" class="btn btn-default" ng-click="sendMail(details, 'mailGun', 'sendGrid')" ng-disabled="progress.sendingMail">Send via Mailgun</button>
                                 &nbsp;&nbsp;&nbsp;
                                 <button type="submit" class="btn btn-default " ng-click="sendMail(details, 'sendGrid', 'mailGun')" ng-disabled="progress.sendingMail">Send via SendGrid</button>
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-show="progress.status">
+                        <label>Email Client Response:</label>
+                        <div class="well">
+                            {{progress.status}}
                         </div>
                     </div>
                 </form>

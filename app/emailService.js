@@ -3,16 +3,11 @@
 
         let service = {};
 
-        service.send = function send(client, emailDetails, backUpclient) {
-           return $http.post(
-            apiBaseUrl + 'api/sendEmail',
-            {
-                details: emailDetails,
-                client: client,
-                backUpClient: backUpClient
-            }
-            )
+        service.send = function send(parameters) {
+           return $http.post(apiBaseUrl + 'api/sendEmail',parameters)
             .then((results)=> {
+                console.log("backend response");
+                console.log(results);
                 return results.data
             })
             .catch((error)=> {
