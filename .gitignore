@@ -1,0 +1,8 @@
+*.*~
+*.swp
+*.dmp
+*.swo
+*.swn
+*.log
+node_modules
+logs

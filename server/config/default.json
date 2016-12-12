@@ -1,0 +1,15 @@
+ {
+    "server": {
+        "port": 6677
+    },
+
+    "keys": {
+    	"mailGun": {
+    		"key": "key-a3b68d95db6b0e25c65c4dfb0e91a105",
+    		"sandboxDomain": "sandbox27e48a261ca34bdb88906de2b88b090c.mailgun.org"
+    	},
+    	"sendGrid": {
+    		"key": "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"
+    	}
+    }
+}
