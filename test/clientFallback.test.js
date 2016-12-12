@@ -11,7 +11,7 @@ describe('homeController', function() {
     beforeEach(function() {
         window.angular.mock.module('emailSender');
 
-        inject(function(_$rootScope_, $controller, APIRoutes, _$q_, _$httpBackend_, _apiBaseUrl_) {
+        inject(function(_$rootScope_, $controller, _$q_, _$httpBackend_, _apiBaseUrl_, _$http_, ngNotify) {
             $q = _$q_;
 
             apiBaseUrl = _apiBaseUrl_
@@ -21,33 +21,63 @@ describe('homeController', function() {
             $httpBackend = _$httpBackend_;
 
             $scope = _$rootScope_.$new()
+            console.log("what is ngnotify?");
+            console.log(ngNotify)
+
+            $scope.emailForm = {};
 
             homeController = $controller('homeController', {
-                APIRoutes: APIRoutes,
                 $scope: $scope,
-                $q: $q
+                $q: $q,
+                $http: _$http_,
+                apiBaseUrl: _apiBaseUrl_,
+                ngNotify: ngNotify
             })
+            // homeController = _homeController_   
         })
     })
 
     it('Should exist', function(done) {
         this.timeout = 10000;
-        expect(homeController).toBeDefined();
+        console.log(homeController)
+        $scope.emailForm.$invalid = false;
+        $scope.validation = {
+            attribute: true
+        }
+        // expect(homeController).toBeDefined();
 
-        $httpBackend.whenPOST(apiBaseUrl + '/mailgun/send').respond({
+        console.log("from our test!");
+        console.log(apiBaseUrl + '/mailGun/send')
+        $httpBackend
+        .when('POST', apiBaseUrl + 'mailGun/send')
+        .respond(200, {
             errors: [],
             data: "mail sent!"
         });
 
-        $scope.sendViaMailgun({details: "details"})
-        .then((results)=> {
-            console.log("here are our results");
-            console.log(results);
-            done();
-        })
+        // $httpBackend.expect('POST', 'http://localhost/sendGrid/send')
+        // .respond(200, {
+        //     errors: [],
+        //     data: "mail sent!"
+        // })
 
-        deferred.resolve();
+        $scope.sendMail({},  'mailGun', 'sendGrid');
+        console.log("before our flush")
+        $httpBackend.flush();
+        // deferred.resolve();
+        // $scope.$digest();
 
-        $scope.$digest();
+        console.log("after our flush");
+
+
+        // done()
+
+
+
+        
+
+     
+
+        
     }) 
 })

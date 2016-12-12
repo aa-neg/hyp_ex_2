@@ -22,32 +22,15 @@ app.get('/', function(req, res) {
 	res.sendFile(path.join(__dirname, '../app', 'index.html'));
 })
 
-app.post('/mailgun/send', (req, res)=> {
-	api.sendMailGun(req.body.details)
+app.post('/api/sendEmail', (req, res)=> {
+	api.sendEmail(req.body, api.emailClients[req.body.client], api.emailClients[req.body.backUpClient])
 	.then((resolve)=> {
-		res.json({
-			result:resolve
-		})
+		res.json(resolve)
 	})
 	.catch((error)=> {
-		res.json({
-			error: error
-		})
+		res.json(error)
 	})
-});
-app.post('/sendgrid/send', (req, res)=> {
-	api.sendSendGrid(req.body.details)
-	.then((resolve)=> {
-		res.json({
-			result: resolve
-		})
-	})
-	.catch((error)=> {
-		res.json({
-			error: error
-		})
-	})
-});
+})
 
 let server;
 

@@ -18,6 +18,8 @@ module.exports = function(config) {
         'node_modules/jquery/dist/jquery.min.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
         'node_modules/angular/angular.min.js',
+        'node_modules/ui-select/dist/select.min.js',
+        'node_modules/ng-notify/dist/ng-notify.min.js',
         'node_modules/angular-mocks/angular-mocks.js',
         'app/module.js',
         'app/*.js',

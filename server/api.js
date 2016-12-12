@@ -36,9 +36,15 @@ let sendSendGrid = module.exports.sendSendGrid = function(details) {
 			} else {
 				console.log("[sendSendGrid] : " + body);
 				if (body && body.errors) {
-					reject(body.errors)
+					reject({
+						client: 'sendGrid',
+						errors: body.errors
+					})
 				} else {
-					resolve(body);
+					resolve({
+						client: 'sendGrid',
+						body: body
+					});
 				}
 			}
 		}
@@ -73,13 +79,57 @@ let sendMailGun = module.exports.sendMailGun = function(details) {
 		function(err, httpResponse, body) {
 			if (err) {
 				console.error("[sendMailgun] : " + err);
-				reject(err);
+				reject({
+					client: 'mailGun',
+					errors: err
+				});
 			} else {
 				console.log("[sendMailgun] : " + body);
-				resolve(body);
+				resolve({
+					client: 'mailGun',
+					body: body
+				});
 			}
 		}
 		)
 	});
 };
 
+let emailClients = module.exports.emailClients = {
+	mailGun: sendMailgun,
+	sendGrid: sendSendGrid
+}
+
+
+let sendEmail = module.exports.sendEmail = function(emailBody, mainClient, backUpClient) {
+	return new Promise(function(resolve, reject) {
+		let responseObject = {
+			message: '',
+			details: '',
+			errors: [],
+			success: false
+		};
+
+		mainClient(emailBody)
+		.then((results)=> {
+			responseObject.message = results.message;
+			responseObject.details = results.body;
+			responseObject.success = true;
+			resolve(responseObject);
+		})
+		.catch((error)=> {
+			console.error("[sendEmail] : " + error);
+			responseObject.errors.push(error);
+			backUpClient(emailBody)
+			.then((results)=> {
+				responseObject.message = "Initial client had issues, email sent through " + results.client + " instead.";
+				responseObject.success = true;
+				resolve(responseObject)
+			})
+			.catch((error)=> {
+				responseObject.errors.push(error);
+				reject(responseObject);
+			})
+		})
+	})
+}
