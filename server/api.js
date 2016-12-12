@@ -5,9 +5,13 @@ const request = require('request');
 
 //Required to map into sendGrid's api
 let sendGridMapEmail = (emailArray) => {
-	return emailArray.map((email) => {
-		return {email: email}
-	})
+	if (emailArray) {
+		return emailArray.map((email) => {
+			return {email: email}
+		})
+	} else {
+		return [];
+	}
 };
 
 let sendSendGrid = module.exports.sendSendGrid = function(details) {
@@ -107,7 +111,8 @@ let sendEmail = module.exports.sendEmail = function(emailBody, mainClient, backU
 			message: '',
 			details: '',
 			errors: [],
-			success: false
+			success: false,
+			initialClient: ''
 		};
 
 		mainClient(emailBody)
@@ -119,10 +124,14 @@ let sendEmail = module.exports.sendEmail = function(emailBody, mainClient, backU
 		})
 		.catch((error)=> {
 			console.error("[sendEmail] : " + error);
-			responseObject.errors.push(error);
+			responseObject.initialClient = results.client;
+			responseObject.errors.push(error.errors);
 			backUpClient(emailBody)
 			.then((results)=> {
-				responseObject.message = "Initial client had issues, email sent through " + results.client + " instead.";
+				if (results.body) {
+					responseObject.details = results.body;
+				}
+				responseObject.message = responseObject.initialClient + " had issues, email sent through " + results.client + " instead.";
 				responseObject.success = true;
 				resolve(responseObject)
 			})

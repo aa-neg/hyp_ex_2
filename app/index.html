@@ -89,10 +89,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" ng-show="progress.status">
-                        <label>Email Client Response:</label>
-                        <div class="well">
-                            {{progress.status}}
+                    <div class="form-group" ng-show="progress.message">
+                        <div class="col-sm-4">
+                            <label class="pull-right">Email Client Response:</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="well">
+                                {{progress.message}}
+                            </div>
+                        </div>
+                    </div>
+                     <div class="form-group" ng-show="progress.status">
+                        <div class="col-sm-4">
+                            <label class="pull-right">Details:</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="well">
+                                {{progress.status}}
+                            </div>
                         </div>
                     </div>
                 </form>

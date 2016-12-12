@@ -15,8 +15,9 @@
         ngNotify.config({
             theme: 'pure',
             position: 'top',
-            duration: 3000,
-            button: true
+            duration: 5000,
+            button: true,
+            sticky: true
         })
 
         $scope.emailValidation = (emailArray, detailProperty) => {
@@ -34,6 +35,12 @@
             return emailList;
         };
 
+        let processErrors = (errorArray) => {
+            angular.forEach(errorArray, (error)=> {
+                ngNotify.set(error.message, 'warn');
+            })
+        }
+
         $scope.sendMail = (details, initialClient, backUpClient) => {
             if ($scope.emailForm.$invalid || Object.keys($scope.validation).every((emailValidated)=> {return !$scope.validation[emailValidated]})) {
                 ngNotify.set("Please fill out all required fields with valid values.", 'warn');
@@ -41,6 +48,8 @@
             }
 
             $scope.progress.status = '';
+            $scope.progress.message = '';
+            $scope.progress.sendingMail = true;
 
             EmailService.send({
                 client: initialClient,
@@ -48,24 +57,17 @@
                 details: details
             })
             .then((results)=> {
-                if (!results.success) {
-                    angular.forEach(results.errors, (error)=> {
-                        ngNotify.set(error, 'warn');
-                    })
-                    ngNotify.set("Error sending via "  +  initialClient  + " : " + error, 'warn');
-                    return;
+                $scope.progress.sendingMail = false;
+                if (results.errors.length > 0) {
+                    processErrors(results.errors);
+                    if (!results.success) {return}
                 }
 
                 ngNotify.set(results.message, 'success');
+                $scope.progress.message = results.message;
                 if (results.details) {
                     $scope.progress.status = results.details;
                 }
-
-                if (results.errors.length > 0) {
-                     angular.forEach(results.errors, (error)=> {
-                        ngNotify.set(error, 'warn');
-                    })
-                };
             })
         
         };
