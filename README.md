@@ -10,7 +10,10 @@ npm install
 
 ```
 npm start
+
 ```
+
+Note server will be running on http://localhost:6677
 
 #### Running tests:
 
