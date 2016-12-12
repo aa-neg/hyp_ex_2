@@ -16,7 +16,7 @@ let sendSendGrid = module.exports.sendSendGrid = function(details) {
 		{
 			url: "https://api.sendgrid.com/v3/mail/send",
 			headers: {
-				Authorization: "Bearer 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",
+				Authorization: "Bearer " + config.keys.sendGrid.key,
 				"Content-Type": 'application/json'
 			},
 			json: {
