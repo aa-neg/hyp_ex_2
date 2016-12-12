@@ -19,7 +19,7 @@
                 <br><br>
                 <form  name="emailForm" class="form-horizontal inner-wrap" novalidate>
                     <div class="form-group required" ng-class="{ 'has-error' : !validation.emailTo && !emailForm.emailTo.$pristine}">
-                       <label for="email-to" class="col-sm-4 control-label"><span uib-tooltip="Note sending through mailGrid will only allow addresses which have been verified due to the sandbox domain." class="glyphicon glyphicon-exclamation-sign"></span>To:</label>
+                       <label for="email-to" class="col-sm-4 control-label">To:</label>
                        <div class="col-sm-8">
                             <ui-select name="emailTo" id="betTypes" multiple ng-model="details.emailTo" theme="bootstrap" class="form-control" ng-change="emailValidation(details.emailTo, 'emailTo')">
                                 <ui-select-match placeholder="">
