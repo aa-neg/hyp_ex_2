@@ -72,7 +72,7 @@
                             <p ng-show="!validation.emailBcc && !emailForm.emailBcc.$pristine" class="help-block">Please enter valid e-mail addresses.</p>
                        </div>
                     </div>
-                    <div class="form-group required" ng-class="{ 'has-error' : emailForm.emailBody.$invalid && !emailForm.emailBody.$pristine}">
+                    <div class="form-group" ng-class="{ 'has-error' : emailForm.emailBody.$invalid && !emailForm.emailBody.$pristine}">
                         <label for="email-body" class="col-sm-4 control-label">Body:</label>
                         <div class="col-sm-8">
                             <textarea name="emailBody" class="form-control" id="email-body" ng-model="details.body" rows="5"></textarea>

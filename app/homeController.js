@@ -41,15 +41,15 @@
             })
         }
 
-        let invalidEmailInLists(validationDict) => {
+        let invalidEmailInLists = (validationDict) => {
             return Object.keys(validationDict)
             .every((emailValidated)=> {
-                return validationDict[emailValidated]
+                return !validationDict[emailValidated]
             })
         }
 
         $scope.sendMail = (details, initialClient, backUpClient) => {
-            if ($scope.emailForm.$invalid || invalidEmailInLists) {
+            if ($scope.emailForm.$invalid || invalidEmailInLists($scope.validation)) {
                 ngNotify.set("Please fill out all required fields with valid values.", 'warn');
                 return;
             }
