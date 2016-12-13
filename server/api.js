@@ -107,6 +107,7 @@ let emailClients = module.exports.emailClients = {
 
 let sendEmail = module.exports.sendEmail = function(emailBody, mainClient, backUpClient) {
 	return new Promise(function(resolve, reject) {
+
 		let responseObject = {
 			message: '',
 			details: '',
@@ -123,8 +124,8 @@ let sendEmail = module.exports.sendEmail = function(emailBody, mainClient, backU
 			resolve(responseObject);
 		})
 		.catch((error)=> {
-			console.error("[sendEmail] : " + error);
-			responseObject.initialClient = results.client;
+			console.error("[sendEmail] : " + error.errors);
+			responseObject.initialClient = error.client;
 			responseObject.errors.push(error.errors);
 			backUpClient(emailBody)
 			.then((results)=> {

@@ -10,7 +10,7 @@ let backUpTrigger = false;
 let mockMainClient = function(testBody) {
     return new Promise(function(resolve, reject) {
         if (testBody.failOnce) {
-            reject('sendgrid error')
+            reject({errors:'sendgrid error', client: 'mainClient'})
         } else {
             resolve({message: 'success'})
         }
@@ -20,7 +20,7 @@ let mockMainClient = function(testBody) {
 let mockBackupClient = function(testBody) {
     return new Promise(function(resolve, reject) {
         if (testBody.failTwice) {
-            reject('mailgun error')
+            reject({errors:'mailgun error', client: 'backupClient'})
             return
         } 
 
