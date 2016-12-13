@@ -1,7 +1,7 @@
 {
-  "name": "Email Client",
+  "name": "Email-sender",
   "version": "1.0.0",
-  "description": "simple web interface to display alerts table",
+  "description": "Simple email sender",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/clientFallback.test.js",
