@@ -36,20 +36,22 @@
         };
 
         let processErrors = (errorArray) => {
-            angular.forEach(errorArray, (error)=> {
+            //Flatten the array
+            angular.forEach(errorArray.reduce((a,b)=>{return a.concat(b)}, []), (error)=> {
                 ngNotify.set(error.message, 'warn');
             })
         }
 
-        let invalidEmailInLists = (validationDict) => {
+        let validEmailInLists = (validationDict) => {
             return Object.keys(validationDict)
             .every((emailValidated)=> {
-                return !validationDict[emailValidated]
+                return validationDict[emailValidated] == true;
             })
         }
 
         $scope.sendMail = (details, initialClient, backUpClient) => {
-            if ($scope.emailForm.$invalid || invalidEmailInLists($scope.validation)) {
+
+            if ($scope.emailForm.$invalid || !validEmailInLists($scope.validation)) {
                 ngNotify.set("Please fill out all required fields with valid values.", 'warn');
                 return;
             }
@@ -67,16 +69,18 @@
                 $scope.progress.sendingMail = false;
                 if (results.errors.length > 0) {
                     processErrors(results.errors);
-                    if (!results.success) {return}
+                    if (!results.success) {
+                        return
+                    }
+                } else {
+                    ngNotify.set(results.message, 'success');
                 }
 
-                ngNotify.set(results.message, 'success');
                 $scope.progress.message = results.message;
-                if (results.details) {
-                    $scope.progress.status = results.details;
+                if (results.details && JSON.parse(results.details).message) {
+                    $scope.progress.status = JSON.parse(results.details).message;
                 }
             })
-        
         };
 
     });

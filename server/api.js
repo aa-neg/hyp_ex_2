@@ -132,7 +132,7 @@ let sendEmail = module.exports.sendEmail = function(emailBody, mainClient, backU
 				if (results.body) {
 					responseObject.details = results.body;
 				}
-				responseObject.message = responseObject.initialClient + " had issues, email sent through " + results.client + " instead.";
+				responseObject.message = responseObject.initialClient + " had issues, email attempted through " + results.client + " instead.";
 				responseObject.success = true;
 				resolve(responseObject)
 			})
