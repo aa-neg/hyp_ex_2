@@ -23,14 +23,8 @@ app.get('/', function(req, res) {
 })
 
 app.post('/api/sendEmail', (req, res)=> {
-	if (!api.emailClients[req.body.client] || !api.emailClients[req.body.backUpClient]) {
-		res.json({
-			success:false,
-			errors: ['Could not find email clients :' + req.body.client + ', ' + req.body.backUpClient]
-		});
-		return;
-	}
-	api.sendEmail(req.body.details, api.emailClients[req.body.client], api.emailClients[req.body.backUpClient])
+	
+	api.sendEmail(req.body.details, api.emailClients.sendGrid, api.emailClients.mailGun)
 	.then((resolve)=> {
 		res.json(resolve)
 	})

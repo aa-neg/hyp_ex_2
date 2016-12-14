@@ -35,48 +35,47 @@
             return emailList;
         };
 
-        let processErrors = (errorArray) => {
+        let processErrors = (errorArray, success) => {
             //Flatten the array
             angular.forEach(errorArray.reduce((a,b)=>{return a.concat(b)}, []), (error)=> {
-                ngNotify.set(error.message, 'warn');
+                $scope.progress.issues += error.message;
+                if (!success) {
+                    ngNotify.set($scope.progress.issues , 'warn');
+                }
             })
         }
 
         let validEmailInLists = (validationDict) => {
             return Object.keys(validationDict)
-            .every((emailValidated)=> {
-                return validationDict[emailValidated] == true;
-            })
+                .every((emailValidated)=> {
+                    return (validationDict[emailValidated] == true);
+                })
         }
 
-        $scope.sendMail = (details, initialClient, backUpClient) => {
-
-            if ($scope.emailForm.$invalid || !validEmailInLists($scope.validation)) {
+        $scope.sendMail = (details) => {
+            if ($scope.emailForm.$invalid || !validEmailInLists($scope.validation) 
+                || !details.emailTo || details.emailTo.length == 0) {
                 ngNotify.set("Please fill out all required fields with valid values.", 'warn');
                 return;
             }
 
             $scope.progress.status = '';
-            $scope.progress.message = '';
+            $scope.progress.issues = '';
             $scope.progress.sendingMail = true;
 
             EmailService.send({
-                client: initialClient,
-                backUpClient: backUpClient,
                 details: details
             })
             .then((results)=> {
                 $scope.progress.sendingMail = false;
                 if (results.errors.length > 0) {
-                    processErrors(results.errors);
-                    if (!results.success) {
-                        return
-                    }
-                } else {
+                    processErrors(results.errors, results.success);
+                } 
+
+                if (results.success) {
                     ngNotify.set(results.message, 'success');
                 }
 
-                $scope.progress.message = results.message;
                 if (results.details && JSON.parse(results.details).message) {
                     $scope.progress.status = JSON.parse(results.details).message;
                 }

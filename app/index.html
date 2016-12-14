@@ -83,19 +83,17 @@
                         <p class = 'spinner-loader' ng-show="progress.sendingMail"></p>
                         <div class="col-sm-12">
                             <div class="pull-right">
-                                <button type="submit" class="btn btn-default" ng-click="sendMail(details, 'mailGun', 'sendGrid')" ng-disabled="progress.sendingMail">Send via Mailgun</button>
-                                &nbsp;&nbsp;&nbsp;
-                                <button type="submit" class="btn btn-default " ng-click="sendMail(details, 'sendGrid', 'mailGun')" ng-disabled="progress.sendingMail">Send via SendGrid</button>
+                                <button type="submit" class="btn btn-default" ng-click="sendMail(details)" ng-disabled="progress.sendingMail">Send</button>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" ng-show="progress.message">
+                    <div class="form-group" ng-show="progress.issues">
                         <div class="col-sm-4">
-                            <label class="pull-right">Response:</label>
+                            <label class="pull-right">Issues:</label>
                         </div>
                         <div class="col-sm-8">
                             <div class="well">
-                                {{progress.message}}
+                                {{progress.issues}}
                             </div>
                         </div>
                     </div>

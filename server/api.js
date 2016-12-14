@@ -33,7 +33,7 @@ let sendSendGrid = module.exports.sendSendGrid = function(details) {
 			}
 		}
 		,
-		function(err, response ,body) {
+		function(err, httpResponse ,body) {
 			if (err) {
 				console.error("[sendSendGrid] : " + err);
 				reject(err);
@@ -43,6 +43,11 @@ let sendSendGrid = module.exports.sendSendGrid = function(details) {
 					reject({
 						client: 'sendGrid',
 						errors: body.errors
+					})
+				} else if (!(httpResponse.statusCode == 200 || httpResponse.statusCode == 202)) {
+					reject({
+						client: 'sendGrid',
+						errors: {message: 'Bad status code: ' + httpResponse.statusCode}
 					})
 				} else {
 					resolve({
@@ -81,11 +86,18 @@ let sendMailGun = module.exports.sendMailGun = function(details) {
 		}
 		,
 		function(err, httpResponse, body) {
+
 			if (err) {
 				console.error("[sendMailgun] : " + err);
 				reject({
 					client: 'mailGun',
 					errors: err
+				});
+			} else if (!(httpResponse.statusCode == 200 || httpResponse.statusCode == 202)) {
+				console.error("[sendMailgun] : bad request code: " + httpResponse.statusCode);
+				reject({
+					client: 'mailGun',
+					errors: {message: 'bad request code ' + httpResponse.statusCode}
 				});
 			} else {
 				console.log("[sendMailgun] : " + body);
@@ -132,7 +144,7 @@ let sendEmail = module.exports.sendEmail = function(emailBody, mainClient, backU
 				if (results.body) {
 					responseObject.details = results.body;
 				}
-				responseObject.message = responseObject.initialClient + " had issues, email attempted through " + results.client + " instead.";
+				responseObject.message = responseObject.initialClient + " had issues, email sent through " + results.client + " instead.";
 				responseObject.success = true;
 				resolve(responseObject)
 			})
